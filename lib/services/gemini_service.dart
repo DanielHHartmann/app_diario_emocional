@@ -1,18 +1,27 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class GeminiService {
-  static const _apiKey = 'AIzaSyBzwiy9NAlFkMl56cLwUiFDAYKcUJRosk4';
+
+
   static const _model = 'gemini-1.5-flash';
 
-  static const _apiUrl =
-      'https://generativelanguage.googleapis.com/v1/models/$_model:generateContent?key=$_apiKey';
+
 
   Future<String> getPhrase(String prompt) async {
+    String? apiKey = dotenv.env['GEMINI_API_KEY'];
+
+    if (apiKey == null){
+      return 'Faltou chave de API';
+    }
+
+    String  apiUrl =
+        'https://generativelanguage.googleapis.com/v1/models/$_model:generateContent?key=$apiKey';
     try {
       final response = await http.post(
-        Uri.parse(_apiUrl),
+        Uri.parse(apiUrl),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'contents': [

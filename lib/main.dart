@@ -1,6 +1,7 @@
 import 'package:diario_emocional/core/app_colors.dart';
 import 'package:diario_emocional/services/theme_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'router/app_routes.dart';
@@ -8,6 +9,7 @@ import 'router/app_pages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   await initializeDateFormatting('pt_BR');
   Get.put(ThemeController());
   runApp(MyApp());
