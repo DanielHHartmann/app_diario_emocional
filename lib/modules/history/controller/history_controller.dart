@@ -1,3 +1,4 @@
+import 'package:diario_emocional/modules/home/controller/home_controller.dart';
 import 'package:get/get.dart';
 import 'package:diario_emocional/data/model/journal_entry.dart';
 import 'package:diario_emocional/services/database_service.dart';
@@ -31,5 +32,21 @@ class HistoryController extends GetxController {
   void onDaySelected(DateTime day, DateTime focusedDay) {
     final dateKey = DateTime(day.year, day.month, day.day);
     selectedEntry.value = entriesMap[dateKey];
+  }
+
+  Future<void> deleteEntryForDate(DateTime date) async {
+    final dbInstance = DatabaseService();
+    final entry = entriesMap[date];
+    if (entry != null) {
+      await dbInstance.deleteEntry(entry.id!);
+      entriesMap.remove(date);
+      if (selectedEntry.value?.id == entry.id) {
+        selectedEntry.value = null;
+      }
+    }
+    if (Get.isRegistered<HomeController>()) {
+      Get.find<HomeController>().loadTodayEntry();
+      Get.find<HomeController>().loadWeeklyEntries();
+    }
   }
 }

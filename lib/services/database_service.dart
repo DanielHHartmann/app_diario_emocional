@@ -116,4 +116,13 @@ class DatabaseService {
     log('🧼 All journal entries deleted.');
   }
 
+  Future<void> deleteEntry(int id) async {
+    final dbInstance = await db;
+    await dbInstance.delete(
+      'journal_entries',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
 }

@@ -86,6 +86,29 @@ class HistoryPage extends StatelessWidget {
       ),
     );
   }
+  void _showDeleteDialog(BuildContext context, HistoryController controller, DateTime dateKey) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Excluir entrada'),
+        content: const Text('Tem certeza que deseja excluir esta entrada?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () async {
+              await controller.deleteEntryForDate(dateKey);
+              Navigator.pop(context);
+            },
+            child: const Text('Excluir', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget? _buildEmotionDayCell(
       BuildContext context,
       DateTime date,
@@ -93,28 +116,30 @@ class HistoryPage extends StatelessWidget {
       ) {
     final dateKey = DateTime(date.year, date.month, date.day);
     final entry = controller.entriesMap[dateKey];
-    if (entry == null) {
-      return null;
-    }
+    if (entry == null) return null;
 
     final color = emotionColors[entry.emotion]!.withOpacity(0.3);
 
-    return Container(
-      margin: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: color,
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        '${date.day}',
-        style: TextStyle(
-          color: Theme.of(context).textTheme.bodyMedium!.color,
-          fontWeight: FontWeight.bold,
+    return GestureDetector(
+      onLongPress: () => _showDeleteDialog(context, controller, dateKey),
+      child: Container(
+        margin: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: color,
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          '${date.day}',
+          style: TextStyle(
+            color: Theme.of(context).textTheme.bodyMedium!.color,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
   }
+
 
 }
 
